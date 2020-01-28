@@ -17,5 +17,11 @@ pip install cherrypy
 ### Installing
 
 ```
-Give the example
+pip install git+https://github.com/romecode/Builder-UI.git
+```
+
+### Run
+
+```
+>python server.py
 ```
