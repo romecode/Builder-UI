@@ -92,5 +92,11 @@ class Handler(object):
         return result
     
 
+def main():
+    #DO STUFF HERE
+    cherrypy.quickstart(Handler(),'/','handler.conf')
 
-cherrypy.quickstart(Handler(),'/','handler.conf')
+
+
+if __name__ == '__main__':
+    main()
