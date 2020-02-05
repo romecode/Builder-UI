@@ -40,6 +40,14 @@ class Handler(object):
         return result
     
     @cherrypy.expose
+    @cherrypy.tools.json_out()
+    def log(self):
+        f = open("FabricBuilder.log")
+        text = f.read()
+        f.close()
+        return json.dumps(text)
+    
+    @cherrypy.expose
     def readfile(self):
         with xlrd.open_workbook('workbook.xls') as f:
             

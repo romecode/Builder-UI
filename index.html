@@ -139,7 +139,18 @@
               var modal = $(this)
               el = modal.find('#deploy_log')
               deployModal = setInterval(() => {
-                el.load("/static/FabricBuilder.log");
+                $.ajax({
+                  url: '/log',
+                  type: "GET",
+                  success: function(result) {
+                      el.text(JSON.parse(result))
+                      
+                  },
+                  error: function(error) {
+                      bootstrap_alert('#form_errors', 'Run error: ' + error)
+
+                  }
+            	});
                 el.animate({
                   scrollTop: el.prop("scrollHeight")
                 });
@@ -154,6 +165,7 @@
             
             run = function(op) {
               var autoexec = document.getElementById('autoexec').checked;
+              autoexec = autoexec ? 1:0;
               var cvpuser = document.getElementById('cvpuser').value;
               var cvppass = document.getElementById('cvppass').value;
               $.ajax({
