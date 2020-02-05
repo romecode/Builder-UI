@@ -36,7 +36,7 @@
     </div>
     <div class="row">
         <div class="col-2">
-            <button class="btn btn-primary l3ls button" onclick="run(1)">Deploy L3LS</button>
+            <button class="btn btn-primary l3ls button" onclick="run(1)" data-toggle="modal" data-target="#deployModal">Deploy L3LS</button>
             <br/>
             <button class="btn btn-primary vlans button" onclick="run(2)">Add VLANS</button>
             <br/>
@@ -85,6 +85,27 @@
             </div>
         </div>
     </div>
+    
+    <div class="modal fade" id="deployModal" tabindex="-1" role="dialog" aria-labelledby="deployModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deployModalLabel">Deployment Logs</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="deploy_log" style="max-height:500px;overflow:scroll;"></span>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -103,6 +124,20 @@
             function bootstrap_alert(elem, message) {
                 $(elem).show().html('<div class="" role="alert">' + message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             };
+            
+            
+            $('#deployModal').on('show.bs.modal', function (event) {
+              
+              var modal = $(this)
+              
+              setInterval(() => {
+                $(this).find('#deploy_log').load("/static/FabricBuilder.log")
+                
+              }, 1000);
+              
+              
+            })
+            
             run = function(op) {
               $.ajax({
                 url: '/run',
@@ -112,13 +147,15 @@
                 dataType: 'json',
                 success: function(result) {
                     bootstrap_alert('#form_errors', 'Run success: ' + result)
+                    
                 },
                 error: function(error) {
                     bootstrap_alert('#form_errors', 'Run error: ' + error)
 
                 }
-            });
+           	  });
             };
+            
             $.ajax({
                 url: '/readfile',
                 type: "GET",
@@ -166,6 +203,7 @@
                     dataType: 'json'
                 })
             });
+            
             $("form").submit(function(evt) {
                 evt.preventDefault();
                 var formData = new FormData($(this)[0]);
@@ -190,6 +228,7 @@
                     }
                 });
             });
+            
             $('#upload').click(function() {
                 $("form").submit();
             })
