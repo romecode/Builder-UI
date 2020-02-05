@@ -96,7 +96,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="deploy_log" style="max-height:500px;overflow:scroll;white-space: pre-line;font-size:12px;"></p>
+                    <p id="deploy_log" style="max-height:500px;overflow:scroll;white-space: pre-line;font-size:12px;overflow-x:scroll;"></p>
 
                 </div>
                 <div class="modal-footer">
@@ -120,6 +120,7 @@
         var tabs = [];
         var tables = [];
         var run = null;
+        var deployModal = null;
         $(document).ready(function() {
             function bootstrap_alert(elem, message) {
                 $(elem).show().html('<div class="" role="alert">' + message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
@@ -129,14 +130,20 @@
             $('#deployModal').on('show.bs.modal', function (event) {
               
               var modal = $(this)
-              
-              setInterval(() => {
-                $(this).find('#deploy_log').load("/static/FabricBuilder.log");
-                
+              el = modal.find('#deploy_log')
+              deployModal = setInterval(() => {
+                el.load("/static/FabricBuilder.log");
+                el.animate({
+                  scrollTop: el.prop("scrollHeight")
+                });
               }, 1000);
+            });
+            
+			$('#deployModal').on('hide.bs.modal', function (event) {
               
-              
-            })
+              clearInterval(deployModal);
+            });
+            
             
             run = function(op) {
               $.ajax({

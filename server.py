@@ -4,8 +4,22 @@ import xlwt
 import json
 import os
 
-localDir = os.path.dirname(__file__)
-absDir = os.path.join(os.getcwd(), localDir)
+path   = os.path.abspath(os.path.dirname(__file__))
+config = {
+  'global' : {
+    'server.socket_host' : '127.0.0.1',
+    'server.socket_port' : 8080,
+    'server.thread_pool' : 1
+  },
+  '/static' : {
+    'tools.staticdir.on'  : True,
+    'tools.staticdir.dir' : os.path.join(path, 'static'),
+    'tools.expires.on'    : True,
+    'tools.expires.secs'  : 1
+  }
+}
+
+
 
 class Handler(object):
     @cherrypy.expose
@@ -50,6 +64,7 @@ class Handler(object):
                 
         return json.dumps(toReturn)
     
+   
     @cherrypy.expose
     @cherrypy.tools.json_out()
     @cherrypy.tools.json_in()
@@ -94,7 +109,7 @@ class Handler(object):
 
 def main():
     #DO STUFF HERE
-    cherrypy.quickstart(Handler(),'/','handler.conf')
+    cherrypy.quickstart(Handler(),'/',config = config)
 
 
 
