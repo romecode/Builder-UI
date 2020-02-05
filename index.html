@@ -96,7 +96,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <span id="deploy_log" style="max-height:500px;overflow:scroll;"></span>
+                    <p id="deploy_log" style="max-height:500px;overflow:scroll;white-space: pre-line;font-size:12px;"></p>
 
                 </div>
                 <div class="modal-footer">
@@ -131,7 +131,7 @@
               var modal = $(this)
               
               setInterval(() => {
-                $(this).find('#deploy_log').load("/static/FabricBuilder.log")
+                $(this).find('#deploy_log').load("/static/FabricBuilder.log");
                 
               }, 1000);
               
