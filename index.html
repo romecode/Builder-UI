@@ -137,20 +137,19 @@
             $('#deployModal').on('show.bs.modal', function (event) {
               
               var modal = $(this)
+              var text;
               el = modal.find('#deploy_log')
               deployModal = setInterval(() => {
                 $.ajax({
                   url: '/log',
                   type: "GET",
+                  async: false,
                   success: function(result) {
                       el.text(JSON.parse(result))
                       
-                  },
-                  error: function(error) {
-                      bootstrap_alert('#form_errors', 'Run error: ' + error)
-
                   }
-            	});
+           	  	});
+                   
                 el.animate({
                   scrollTop: el.prop("scrollHeight")
                 });
