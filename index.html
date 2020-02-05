@@ -31,11 +31,19 @@
             <div id="form_errors" class="alert alert-warning alert-dismissible fade show" style="display: none"></div>
         </div>
         <div class="col-sm">
-
+			<div class="btn-group-toggle" data-toggle="buttons">
+			  <label class="btn btn-outline-warning">
+			    <input id="autoexec" type="checkbox" autocomplete="off"> Auto-execute tasks
+			  </label>
+			</div>
         </div>
     </div>
     <div class="row">
         <div class="col-2">
+        	<br/>
+       		<input type="text" class="form-control" id="cvpuser" aria-describedby="emailHelp" placeholder="CVP username">
+       		<input type="password" class="form-control" id="cvppass" aria-describedby="emailHelp" placeholder="CVP password">
+       		<br/>
             <button class="btn btn-primary l3ls button" onclick="run(1)" data-toggle="modal" data-target="#deployModal">Deploy L3LS</button>
             <br/>
             <button class="btn btn-primary vlans button" onclick="run(2)">Add VLANS</button>
@@ -146,10 +154,13 @@
             
             
             run = function(op) {
+              var autoexec = document.getElementById('autoexec').checked;
+              var cvpuser = document.getElementById('cvpuser').value;
+              var cvppass = document.getElementById('cvppass').value;
               $.ajax({
                 url: '/run',
                 type: "POST",
-                data: JSON.stringify(op),
+                data: JSON.stringify({"operation":op, "autoexec":autoexec, "cvpuser":cvpuser, "cvppass":cvppass}),
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function(result) {
