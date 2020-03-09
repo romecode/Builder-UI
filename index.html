@@ -57,6 +57,8 @@
             <button class="btn btn-primary button" data-toggle="modal" data-target="#uploadModal">Upload file</button>
             <br/>
             <button class="btn btn-primary write button">Write File</button>
+            <br/>
+            <button class="btn btn-primary l3ls button" data-toggle="modal" data-target="#deployModal" >View log</button>
         </div>
         <div class="col-10">
             <div id="tabs" style="overflow:scroll;">
@@ -103,7 +105,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="deploy_log" style="max-height:500px;overflow:scroll;white-space: pre-line;font-size:12px;overflow-x:scroll;"></p>
+                    <p id="deploy_log" style="max-height:500px;overflow:scroll;white-space: pre-line;font-size:12px;overflow-x:scroll;></p>
 
                 </div>
                 <div class="modal-footer">
@@ -128,18 +130,32 @@
         var tables = [];
         var run = null;
         var deployModal = null;
+        var brokeScroll = false;
         $(document).ready(function() {
             function bootstrap_alert(elem, message) {
                 $(elem).show().html('<div class="" role="alert">' + message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
             };
             
-            
+            $('#deploy_log').scroll(function(e) {
+              if ($(this).is(':animated')) {
+                  null
+              } else if (e.originalEvent) {
+                  if(e.target.scrollTop + e.target.clientHeight == e.target.scrollHeight){
+                    brokeScroll = false;
+                  }else{
+                    brokeScroll = true;
+                  }
+              } else {
+                  null
+              }
+          	});
             $('#deployModal').on('show.bs.modal', function (event) {
               
               var modal = $(this)
               var text;
-              el = modal.find('#deploy_log')
+              
               deployModal = setInterval(() => {
+                el = modal.find('#deploy_log')
                 $.ajax({
                   url: '/log',
                   type: "GET",
@@ -149,10 +165,12 @@
                       
                   }
            	  	});
-                   
-                el.animate({
-                  scrollTop: el.prop("scrollHeight")
-                });
+                if(!brokeScroll){
+                  el.animate({
+                    scrollTop: el.prop("scrollHeight")
+                  });
+                }
+                
               }, 1000);
             });
             
@@ -161,7 +179,23 @@
               clearInterval(deployModal);
             });
             
-            
+            logReader = function(){
+              
+              el = modal.find('#deploy_log')
+              $.ajax({
+                url: '/log',
+                type: "GET",
+                async: false,
+                success: function(result) {
+                    el.text(JSON.parse(result))
+                    
+                }
+         	  	});
+
+              el.animate({
+                scrollTop: el.prop("scrollHeight")
+              });
+            }
             run = function(op) {
               var autoexec = document.getElementById('autoexec').checked;
               autoexec = autoexec ? 1:0;
